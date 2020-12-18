@@ -24,3 +24,9 @@ export default function getRepositoriesByName(name: string) {
     `${process.env.REACT_APP_API_URL}/repositories?owner=${name}`
   );
 }
+
+export function handleRepositoryStar(fullName: string) {
+  return Axios.post(`${process.env.REACT_APP_API_URL}/repositories/star`, {
+    fullName,
+  });
+}

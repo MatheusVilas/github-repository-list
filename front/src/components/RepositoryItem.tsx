@@ -20,6 +20,8 @@ import moment from "moment-timezone";
 import { getRandomColor } from "../helpers/getRandomColor";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import BugReportIcon from "@material-ui/icons/BugReport";
+import { handleRepositoryStar } from "../api";
+
 export default function RepositoryItem(props: any) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
@@ -35,16 +37,16 @@ export default function RepositoryItem(props: any) {
     .tz("America/Sao_Paulo")
     .format("DD/MM/YYYY");
 
-  async function handleStarChange() {
-    // post
+  function handleStarChange() {
+    handleRepositoryStar(props.full_name).then((success) => {
+      if (isStarred) {
+        if (starCount >= 1) setStarCount(starCount - 1);
+      } else {
+        setStarCount(starCount + 1);
+      }
 
-    if (isStarred) {
-      if (starCount >= 1) setStarCount(starCount - 1);
-    } else {
-      setStarCount(starCount + 1);
-    }
-
-    setIsStarred(!isStarred);
+      setIsStarred(!isStarred);
+    });
   }
 
   return (
