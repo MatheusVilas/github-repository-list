@@ -50,4 +50,44 @@ export class RepositoryController {
       throw error.response.data.message;
     }
   }
+
+  async handleStarRepository(
+    fullName: string,
+    token: string
+  ): Promise<boolean> {
+    try {
+      let starred: boolean;
+      const configs = {
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+          Authorization: `token ${token}`,
+        },
+      };
+
+      try {
+        await axios.get(
+          `https://api.github.com/user/starred/${fullName}`,
+          configs
+        );
+        await axios.delete(
+          `https://api.github.com/user/starred/${fullName}`,
+          configs
+        );
+        starred = false;
+      } catch (e) {
+        await axios.put(
+          `https://api.github.com/user/starred/${fullName}`,
+          {},
+          configs
+        );
+        starred = true;
+      }
+
+      return starred;
+    } catch (error) {
+      console.error(error);
+
+      throw new Error(error.response.data.message);
+    }
+  }
 }

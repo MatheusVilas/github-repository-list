@@ -26,4 +26,22 @@ export class Repository {
       res.status(401).send({ message: error.message });
     }
   }
+
+  async handleStarRepository(req: RequestWithUser, res: Response) {
+    try {
+      const fullName = req.body.fullName;
+      const token = req.userToken;
+
+      if (!token || !fullName) throw new Error("Faltando params");
+
+      const response = await this.repositoryController.handleStarRepository(
+        fullName,
+        token
+      );
+
+      res.send(response);
+    } catch (error) {
+      res.status(401).send({ message: error.message });
+    }
+  }
 }

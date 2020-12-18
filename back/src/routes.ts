@@ -13,6 +13,10 @@ routes.get("/repositories", Auth, (req: Request, resp: Response) =>
   repository.getPublicRepositories(req, resp)
 );
 
+routes.post("/repositories/star", Auth, (req: Request, resp: Response) =>
+  repository.handleStarRepository(req, resp)
+);
+
 routes.get("/login", (req: Request, resp: Response) => login.getUrl(req, resp));
 
 routes.get("/callback", (req: Request, resp: Response) =>
