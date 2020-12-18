@@ -9,7 +9,7 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { Typography } from "@material-ui/core";
 const useStyles = makeStyles({
   list: {
-    width: 450,
+    width: 320,
     display: "flex",
     justifyCcontent: "center",
     alignItems: "center",
