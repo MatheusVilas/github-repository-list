@@ -12,6 +12,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 
 import StarOutlineIcon from "@material-ui/icons/StarOutline";
+import StarIcon from "@material-ui/icons/Star";
 import ShareIcon from "@material-ui/icons/Share";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import LinkIcon from "@material-ui/icons/Link";
@@ -23,6 +24,8 @@ export default function RepositoryItem(props: any) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const [randomColor] = React.useState(getRandomColor());
+  const [isStarred, setIsStarred] = React.useState(props.starred);
+  const [starCount, setStarCount] = React.useState(props.stargazers_count);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -32,7 +35,17 @@ export default function RepositoryItem(props: any) {
     .tz("America/Sao_Paulo")
     .format("DD/MM/YYYY");
 
-  console.log("props", props);
+  async function handleStarChange() {
+    // post
+
+    if (isStarred) {
+      if (starCount >= 1) setStarCount(starCount - 1);
+    } else {
+      setStarCount(starCount + 1);
+    }
+
+    setIsStarred(!isStarred);
+  }
 
   return (
     <Card className={classes.root}>
@@ -56,15 +69,28 @@ export default function RepositoryItem(props: any) {
       />
 
       <CardActions disableSpacing>
-        <IconButton className={classes.wrapperIcon} aria-label="Likes">
-          <StarOutlineIcon />
-          <Typography paragraph>{props.stargazers_count}</Typography>
+        <IconButton
+          onClick={handleStarChange}
+          className={classes.wrapperIcon}
+          aria-label="Likes"
+        >
+          {isStarred ? <StarIcon /> : <StarOutlineIcon />}
+
+          <Typography paragraph>{starCount}</Typography>
         </IconButton>
-        <IconButton className={classes.wrapperIcon} aria-label="Watchers">
+        <IconButton
+          style={{ pointerEvents: "none" }}
+          className={classes.wrapperIcon}
+          aria-label="Watchers"
+        >
           <VisibilityIcon />
           <Typography paragraph>{props.watchers_count}</Typography>
         </IconButton>
-        <IconButton className={classes.wrapperIcon} aria-label="Issues">
+        <IconButton
+          style={{ pointerEvents: "none" }}
+          className={classes.wrapperIcon}
+          aria-label="Issues"
+        >
           <BugReportIcon />
           <Typography paragraph>{props.open_issues_count}</Typography>
         </IconButton>

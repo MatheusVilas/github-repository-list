@@ -1,7 +1,26 @@
-import axios from "axios";
+import Axios from "axios";
+
+Axios.interceptors.request.use(
+  function (config) {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (accessToken) {
+      config.headers.authorization = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+
+export const instance = Axios.create({
+  baseURL: process.env.REACT_APP_API_URL,
+});
 
 export default function getRepositoriesByName(name: string) {
-  return axios
-    .get(`https://api.github.com/users/${name}/repos`)
-    .then((response) => response.data);
+  return Axios.get(
+    `${process.env.REACT_APP_API_URL}/repositories?owner=${name}`
+  );
 }

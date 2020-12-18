@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
@@ -7,6 +7,7 @@ import InputBase from "@material-ui/core/InputBase";
 import { fade, makeStyles } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import { useDebounce } from "use-debounce";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,10 +66,24 @@ const useStyles = makeStyles((theme) => ({
 
 interface HeaderProps {
   openDrawer: () => void;
+  searchValue: string;
+  searchOnChange: any;
+  handleSubmit: () => void;
 }
 
-export default function SearchAppBar({ openDrawer }: HeaderProps) {
+export default function SearchAppBar({
+  openDrawer,
+  searchOnChange,
+  searchValue,
+  handleSubmit,
+}: HeaderProps) {
   const classes = useStyles();
+
+  const [value] = useDebounce(searchValue, 1000);
+
+  useEffect(() => {
+    if (value === searchValue) return handleSubmit();
+  }, [value, searchValue]);
 
   return (
     <div className={classes.root}>
@@ -86,7 +101,13 @@ export default function SearchAppBar({ openDrawer }: HeaderProps) {
           <Typography className={classes.title} variant="h6" noWrap>
             Github Repositories List
           </Typography>
-          <div className={classes.search}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              handleSubmit();
+            }}
+            className={classes.search}
+          >
             <div className={classes.searchIcon}>
               <SearchIcon />
             </div>
@@ -96,9 +117,11 @@ export default function SearchAppBar({ openDrawer }: HeaderProps) {
                 root: classes.inputRoot,
                 input: classes.inputInput,
               }}
+              value={searchValue}
               inputProps={{ "aria-label": "search" }}
+              onChange={(item) => searchOnChange(item.currentTarget.value)}
             />
-          </div>
+          </form>
         </Toolbar>
       </AppBar>
     </div>
