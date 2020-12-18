@@ -9,11 +9,20 @@ export class Repository {
 
   async getPublicRepositories(req: Request, res: Response) {
     try {
-      const repositories = await this.repositoryController.getRepositories();
+      const owner = req.query.owner as string;
+
+      if (!owner) throw new Error("Faltando params");
+
+      const repositories = await this.repositoryController.getRepositories(
+        {
+          owner,
+        },
+        false
+      );
 
       res.json(repositories);
     } catch (error) {
-      res.status(401).send(error);
+      res.status(401).send({ message: error.message });
     }
   }
 }
