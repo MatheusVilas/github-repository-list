@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { Inject, Service } from "typedi";
+import { RequestWithUser } from "../auth.middleware";
 import { RepositoryController } from "./controller";
 
 @Service()
@@ -7,7 +8,7 @@ export class Repository {
   @Inject()
   repositoryController: RepositoryController;
 
-  async getPublicRepositories(req: Request, res: Response) {
+  async getPublicRepositories(req: RequestWithUser, res: Response) {
     try {
       const owner = req.query.owner as string;
 
@@ -17,7 +18,7 @@ export class Repository {
         {
           owner,
         },
-        false
+        req.userToken
       );
 
       res.json(repositories);

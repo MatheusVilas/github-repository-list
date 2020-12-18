@@ -6,15 +6,15 @@ import { getRepositoriesInput, IRepository } from "./types";
 export class RepositoryController {
   async getRepositories(
     input: getRepositoriesInput,
-    auth: any
+    token: string
   ): Promise<IRepository[]> {
     try {
       let configs: any = {};
-      if (auth?.githubToken !== undefined) {
+      if (token) {
         configs = {
           headers: {
             Accept: "application/vnd.github.v3+json",
-            Authorization: `token ${auth.githubToken}`,
+            Authorization: `token ${token}`,
           },
         };
       }
@@ -24,7 +24,7 @@ export class RepositoryController {
         configs
       );
 
-      if (auth?.githubToken !== undefined) {
+      if (token) {
         return await Promise.all(
           repositories.data.map(async (repo: IRepository) => {
             let starred: boolean;
@@ -47,8 +47,6 @@ export class RepositoryController {
         }));
       }
     } catch (error) {
-      console.error(error);
-      const status = error.response.status as string;
       throw error.response.data.message;
     }
   }
